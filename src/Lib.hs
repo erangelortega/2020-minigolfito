@@ -89,10 +89,6 @@ vaAlRasDelSuelo = (== 0). altura
 -- **************************--
 --    VERSION 1 --
 -- **************************--
-
-{-Un túnel con rampita sólo es superado si la precisión es mayor a 90 yendo al ras del suelo, independientemente de la velocidad del tiro. 
-Al salir del túnel la velocidad del tiro se duplica, la precisión pasa a ser 100 y la altura 0. -}
-
 data Obstaculo = UnObstaculo {
   puedeSuperar :: Tiro -> Bool,   {- estoy pasando funciones-}
   efectoLuegoDeSuperar :: Tiro -> Tiro
@@ -103,8 +99,8 @@ intentarSuperarObstaculo obstaculo tiroOriginal
   | (puedeSuperar obstaculo) tiroOriginal = (efectoLuegoDeSuperar obstaculo) tiroOriginal
   | otherwise = detenerTiro
 
-{-Una laguna es superada si la velocidad del tiro es mayor a 80 y tiene una altura de entre 1 y 5 metros. Luego de superar una laguna 
-el tiro llega con la misma velocidad y precisión, pero una altura equivalente a la altura original dividida por el largo de la laguna.-}
+{-Un túnel con rampita sólo es superado si la precisión es mayor a 90 yendo al ras del suelo, independientemente de la velocidad del tiro. 
+Al salir del túnel la velocidad del tiro se duplica, la precisión pasa a ser 100 y la altura 0. -}
 
 tunelConRampita :: Obstaculo
 tunelConRampita = UnObstaculo superaTunelConRampita efectoTunelConRampita
@@ -118,6 +114,7 @@ efectoTunelConRampita tiroOriginal = tiroOriginal {
   precision = 100,
   altura = 0
   }
+
 
 {-Una laguna es superada si la velocidad del tiro es mayor a 80 y tiene una altura de entre 1 y 5 metros. Luego de superar una laguna 
 el tiro llega con la misma velocidad y precisión, pero una altura equivalente a la altura original dividida por el largo de la laguna.-}
@@ -225,8 +222,8 @@ puntosGanados = snd
 
 pierdenLaApuesta :: [(Jugador, Puntos)] -> [String]
 pierdenLaApuesta puntosDelTorneo 
-  = ( map (padre.jugadorDeTorneo) . filter ( not.gano puntosDelTorneo)) puntosDelTorneo
+  =  map (padre.jugadorDeTorneo) . filter ( not.gano puntosDelTorneo) $ puntosDelTorneo
 
 gano :: [(Jugador, Puntos)] -> (Jugador, Puntos) -> Bool
 gano puntosDelTorneo puntosDelJugador 
-  = (all ((< puntosGanados puntosDelJugador) .puntosGanados) . filter (/= puntosDelJugador)) puntosDelTorneo
+  = all ((< puntosGanados puntosDelJugador) .puntosGanados) . filter (/= puntosDelJugador) $ puntosDelTorneo
